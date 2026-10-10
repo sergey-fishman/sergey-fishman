@@ -1,0 +1,662 @@
+{
+  "info": {
+    "_postman_id": "8c3b4229-0bf0-4c34-999a-c78ed4887f83",
+    "name": "il Carro positive",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52667408",
+    "_collection_link": "https://go.postman.co/collection/52667408-8c3b4229-0bf0-4c34-999a-c78ed4887f83?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authentication Controller",
+      "item": [
+        {
+          "name": "200 Registration user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();\r",
+                  "pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);\r",
+                  "\r",
+                  "pm.test(\"Check if accessToken is set\", function () {\r",
+                  "    pm.expect(jsonData.accessToken).to.not.be.undefined;\r",
+                  "});\r",
+                  "\r",
+                  "const requestBody = JSON.parse(pm.request.body.raw);\r",
+                  "const savedUsername = requestBody.username;\r",
+                  "pm.collectionVariables.set(\"savedUsername\", savedUsername);\r",
+                  "\r",
+                  "pm.test(\"JWT has valid three-part format\", () => {\r",
+                  "    const tokenParts = jsonData.accessToken.split('.');\r",
+                  "    pm.expect(tokenParts).to.have.lengthOf(3);\r",
+                  "    pm.expect(tokenParts[0]).to.not.be.empty;\r",
+                  "    pm.expect(tokenParts[1]).to.not.be.empty;\r",
+                  "    pm.expect(tokenParts[2]).to.not.be.empty;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"test{{$randomInt}}@gmail.com\",\r\n    \"password\": \"{{validPassword}}\",\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/v1/user/registration/usernamepassword",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v1",
+                "user",
+                "registration",
+                "usernamepassword"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 Login user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);\r",
+                  "\r",
+                  "pm.test(\"Response contains 'accessToken'\", function () {\r",
+                  "    pm.expect(jsonData).to.have.property('accessToken');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"JWT has valid three-part format\", function () {\r",
+                  "    const tokenParts = jsonData.accessToken.split('.');\r",
+                  "    pm.expect(tokenParts).to.have.lengthOf(3);\r",
+                  "    pm.expect(tokenParts[0]).to.not.be.empty;\r",
+                  "    pm.expect(tokenParts[1]).to.not.be.empty;\r",
+                  "    pm.expect(tokenParts[2]).to.not.be.empty;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"{{savedUsername}}\",\r\n    \"password\": \"{{validPassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/v1/user/login/usernamepassword",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v1",
+                "user",
+                "login",
+                "usernamepassword"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Car Controller",
+      "item": [
+        {
+          "name": "200 Add new car",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const requestBody = JSON.parse(pm.request.body.raw);\r",
+                  "const savedSerialNumber = requestBody.serialNumber;\r",
+                  "pm.collectionVariables.set(\"savedSerialNumber\", savedSerialNumber); \r",
+                  "// Save the serial number for later use in other tests.\r",
+                  "\r",
+                  "const responseData = pm.response.json();\r",
+                  "pm.test(\"Response message is defined\", () => {\r",
+                  "    pm.expect(responseData.message).to.not.be.undefined;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"serialNumber\": \"GUI{{$randomInt}}API\",\r\n    \"manufacture\": \"Volvo\",\r\n    \"model\": \"SC90\",\r\n    \"year\": \"2000\",\r\n    \"fuel\": \"diesel\",\r\n    \"seats\": 5,\r\n    \"carClass\": \"eco\",\r\n    \"pricePerDay\": 100,\r\n    \"about\": \"Test text 1234 $$$%@2*^%$#\",\r\n    \"city\": \"Haifa\",\r\n    \"lat\": 0,\r\n    \"lng\": 0,\r\n    \"image\": \"{{$randomImageUrl}}\",\r\n    \"owner\": \"John Cina\",\r\n    \"bookedPeriods\": [\r\n        {\r\n            \"email\": \"{{savedUsername}}\",\r\n            \"startDate\": \"2026-09-13\",\r\n            \"endDate\": \"2026-09-13\"\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/v1/cars",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v1",
+                "cars"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 Booking car",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseData = pm.response.json();\r",
+                  "pm.test(\"Check if the booking message is correct\", function () {\r",
+                  "    pm.expect(responseData.message).to.contain(\"Car booked successfully!\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const today = new Date();",
+                  "const endDate = new Date(today);",
+                  "endDate.setDate(today.getDate() + 2);",
+                  "",
+                  "const pad = (n) => String(n).padStart(2, '0');",
+                  "const formatDate = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;",
+                  "",
+                  "pm.request.body.update({",
+                  "    mode: 'raw',",
+                  "    raw: JSON.stringify({",
+                  "        startDate: formatDate(today),",
+                  "        endDate: formatDate(endDate)",
+                  "    }, null, 2),",
+                  "    options: { raw: { language: 'json' } }",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"startDate\": \"string\",\r\n  \"endDate\": \"string\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/v1/cars/{{savedSerialNumber}}/booking",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v1",
+                "cars",
+                "{{savedSerialNumber}}",
+                "booking"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 Car Search",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseData = pm.response.json();\r",
+                  "pm.test(\"Check if the response contains an array\", function () {\r",
+                  "    pm.expect(responseData.cars).to.be.an('array');\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const today = new Date();\r",
+                  "const endDate = new Date(today);\r",
+                  "endDate.setDate(today.getDate() + 2);\r",
+                  "\r",
+                  "const pad = (n) => String(n).padStart(2, '0');\r",
+                  "const formatDate = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;\r",
+                  "\r",
+                  "pm.request.body.update({\r",
+                  "    mode: 'raw',\r",
+                  "    raw: JSON.stringify({\r",
+                  "        city: \"Rishon LeZion\",\r",
+                  "        startDate: formatDate(today),\r",
+                  "        endDate: formatDate(endDate)\r",
+                  "    }, null, 2),\r",
+                  "    options: { raw: { language: 'json' } }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"city\": \"string\",\r\n  \"startDate\": \"string\",\r\n  \"endDate\": \"string\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/v1/cars/search",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v1",
+                "cars",
+                "search"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 Get user cars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "const serialNumber = pm.collectionVariables.get(\"savedSerialNumber\");",
+                  "pm.test(\"Response contains the saved serialNumber\", function () {",
+                  "    const found = response.cars.some(item => item.serialNumber === serialNumber);",
+                  "    pm.expect(found, `serialNumber \"${serialNumber}\" not found in response`).to.be.true;",
+                  "});",
+                  "/*",
+                  ".some(...) — этот метод перебирает список машин одну за другой. Он работает как переключатель: если он найдет хотя бы одну машину, которая подходит под наше условие, он сразу вернет true (правда). Если обойдет весь список и ничего не найдет — вернет false (ложь).",
+                  "item => item.serialNumber === serialNumber — это стрелочная функция (условие поиска). Для каждой машины (item) она проверяет: «Равен ли серийный номер этой машины (item.serialNumber) тому номеру, который мы ищем (serialNumber)?». В итоге в переменную found запишется либо true, либо false.",
+                  "pm.expect(found ... ).to.be.true — это финальная проверка (assertion). Мы говорим Postman: «Я ожидаю, что в переменной found лежит значение true». Если там true, тест успешно сдается.",
+                  "`serialNumber \"\\${serialNumber}\" not found in response` — это красивое сообщение об ошибке (использует шаблонные строки со знаками обратных кавычек `). Если машина не будет найдена (found будет равен false), тест упадет, и Postman покажет именно этот текст, подставив туда реальный серийный номер, который мы искали. Это очень помогает при отладке!",
+                  "*/"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseURL}}/v1/cars/my",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v1",
+                "cars",
+                "my"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "200 Delete car by id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Car deletion successful\", function () {\r",
+                  "    pm.expect(pm.response.json().message).to.eql(\"Car deleted successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseURL}}/v1/cars/{{savedSerialNumber}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v1",
+                "cars",
+                "{{savedSerialNumber}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{accessToken}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cities controller",
+      "item": [
+        {
+          "name": "200 Get all cities",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseBody = pm.response.json();",
+                  "pm.test(\"Check if the response contains the array of cities\", () => {",
+                  "    pm.expect(responseBody.cities).to.be.an('array');",
+                  "});",
+                  "pm.test(\"Check if the array of cities does not contain undefined values\", () => {",
+                  "    pm.expect(responseBody.cities).to.not.include.undefined;",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{baseURL}}/v1/cars/cities",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "v1",
+                "cars",
+                "cities"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "pm.test(\"Status code is 200\", function () {\r",
+          "    pm.response.to.have.status(200);\r",
+          "});\r",
+          "pm.test(\"Server response has a valid JSON body\", () => {\r",
+          "    pm.response.to.have.jsonBody;\r",
+          "})\r",
+          "pm.test(\"Content-Type includes 'application/json'\", function () {\r",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+          "});"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": ""
+    },
+    {
+      "key": "validPassword",
+      "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "savedUsername",
+      "value": ""
+    },
+    {
+      "key": "savedSerialNumber",
+      "value": ""
+    }
+  ]
+}
