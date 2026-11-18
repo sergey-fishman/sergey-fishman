@@ -36,8 +36,8 @@ A pet web application that implements a basic client-server architecture (an HTM
 
 - [ilCarro (student project): registration GUI test documentation](https://docs.google.com/spreadsheets/d/1GqRn8fNumI-F1B1UXdVazU8JsY-qxKbCMmJzo4TQRnU/edit?usp=sharing)
 - [ilCarro (student project): API positive path checklist and bug reports](https://docs.google.com/spreadsheets/d/1Yr72dV9FFaBoTJUi2W2WnEpkMXAiGA9pCRnG1TPbhPo/edit?usp=sharing)
-- [ilCarro (student project): Mobile UI Registration/Login using Android Emulator](https://docs.google.com/spreadsheets/d/1icFmJcqZNOkay5M2IIxFqo_c7rb6SZBhW5cGI2LxHH8/edit?usp=sharing)
-- [PhoneBook (student project): Mobile UI Registration/Login using Android Emulator](https://docs.google.com/spreadsheets/d/1G3O6qOAFk65BVEzQttHXchvq8WHoI6NbE-2xnM6s2SQ/edit?usp=sharing)
+- [ilCarro (student project): Mobile UI Registration/Login using Android Emulator and Appium for Automation](https://docs.google.com/spreadsheets/d/1icFmJcqZNOkay5M2IIxFqo_c7rb6SZBhW5cGI2LxHH8/edit?usp=sharing)
+- [PhoneBook (student project): Mobile UI Registration/Login using Android Emulator and Appium for Automation](https://docs.google.com/spreadsheets/d/1G3O6qOAFk65BVEzQttHXchvq8WHoI6NbE-2xnM6s2SQ/edit?usp=sharing)
 
 ### API Testing (Postman)
 
